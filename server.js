@@ -13,8 +13,9 @@ var authJwtController = require('./auth_jwt');
 var jwt = require('jsonwebtoken');
 var cors = require('cors');
 var User = require('./Users');
-var Movie = require('./Movies');
+// var Movie = require('./Movies');
 var Review = require('./Reviews');
+const Movie = require('./models/Movie'); // ← this gives an object, not a constructor
 
 var app = express();
 app.use(cors());

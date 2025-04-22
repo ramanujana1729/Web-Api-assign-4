@@ -70,7 +70,7 @@ router.post('/signup', function(req, res) {
                 if (err.code == 11000)
                     return res.json({ success: false, message: 'A user with that username already exists.'});
                 else
-                    return res.json({success: 'error', message: err.code});
+                    return res.json({ success: 'error', message: `Something went wrong. Code: ${err.code}` });
             }
 
             res.json({success: true, msg: 'Successfully created new user.'})

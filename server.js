@@ -67,14 +67,25 @@ router.post('/signup', function(req, res) {
 
         user.save(function(err){
             if (err) {
-                if (err.code == 11000)
-                    return res.json({ success: false, message: 'A user with that username already exists.'});
-                else
-                    return res.json({ success: 'error', message: `Something went wrong. Code: ${err.code}` });
+                console.error("Signup error:", err);
+                if (err.code === 11000) {
+                    return res.status(409).json({
+                        success: false,
+                        message: 'A user with that username already exists.'
+                    });
+                } else {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Signup failed.',
+                        error: err.message,
+                        details: err.errors // Shows which field failed
+                    });
+                }
             }
-
-            res.json({success: true, msg: 'Successfully created new user.'})
+        
+            return res.status(201).json({ success: true, msg: 'Successfully created new user.' });
         });
+        
     }
 });
 

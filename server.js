@@ -117,7 +117,7 @@ router.post('/signin', function (req, res) {
 });
 
 
-router.post('/reviews', authJwtController.isAuthenticated, function(req, res) {
+router.post('/reviews', function(req, res) {
     if (!req.body.movieId || !req.body.username || !req.body.review || typeof req.body.rating === 'undefined') {
         return res.status(400).json({ message: 'Missing review fields' });
     }

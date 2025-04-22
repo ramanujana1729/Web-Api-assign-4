@@ -148,6 +148,69 @@ router.get('/reviews', function(req, res) {
             }
         });
 });
+
+// GET all movies
+router.get('/movies', async (req, res) => {
+  try {
+    const movies = await Movie.find();
+    res.json(movies);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// GET a single movie by title
+router.get('/movies/:title', async (req, res) => {
+  try {
+    const movie = await Movie.findOne({ title: req.params.title });
+    if (!movie) return res.status(404).json({ message: 'Movie not found' });
+    res.json(movie);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// POST a new movie
+router.post('/movies', async (req, res) => {
+  try {
+    const { title, releaseDate, genre, actors } = req.body;
+    if (!title || !releaseDate || !genre || !actors) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
+
+    const newMovie = new Movie({ title, releaseDate, genre, actors });
+    await newMovie.save();
+    res.status(201).json(newMovie);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// PUT to update a movie
+router.put('/movies/:title', async (req, res) => {
+  try {
+    const updatedMovie = await Movie.findOneAndUpdate(
+      { title: req.params.title },
+      req.body,
+      { new: true, runValidators: true }
+    );
+    if (!updatedMovie) return res.status(404).json({ message: 'Movie not found' });
+    res.json(updatedMovie);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+});
+
+// DELETE a movie
+router.delete('/movies/:title', async (req, res) => {
+  try {
+    const deletedMovie = await Movie.findOneAndDelete({ title: req.params.title });
+    if (!deletedMovie) return res.status(404).json({ message: 'Movie not found' });
+    res.json({ message: 'Movie deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
  
 router.get('/movies/:id', function(req, res) {
     const includeReviews = req.query.reviews === 'true';
